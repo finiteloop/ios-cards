@@ -42,9 +42,9 @@ Screenshots
 -----
 Drawn a simple grid at a couple different sizes:
 
-![Small](https://f.cloud.github.com/assets/58667/1460146/04aaa856-4415-11e3-882d-4c5e0a09570d.png)
+![Big](https://f.cloud.github.com/assets/58667/1460151/5e7bb6e0-4415-11e3-8edd-07aa4425d314.png)
 
-![Big](https://f.cloud.github.com/assets/58667/1460147/04abd1ae-4415-11e3-8aa9-e15a282b9be4.png)
+![Small](https://f.cloud.github.com/assets/58667/1460150/5e7b86d4-4415-11e3-98fc-17ed0023be40.png)
 
 License
 -----
