@@ -20,7 +20,13 @@ static NSMutableDictionary *gImageCache;
 -(id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.opaque = NO;
-
+        static const CGFloat cornderRadius = 3;
+        static const CGFloat shadowSize = 1;
+        UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"Card"] resizableImageWithCapInsets:UIEdgeInsetsMake(cornderRadius + shadowSize, cornderRadius + shadowSize, cornderRadius + shadowSize, cornderRadius + shadowSize)]];
+        backgroundImage.frame = CGRectInset(self.bounds, -shadowSize, -shadowSize);
+        backgroundImage.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [self addSubview:backgroundImage];
+        
         _cardImage = [[UIImageView alloc] initWithFrame:self.bounds];
         _cardImage.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:_cardImage];
@@ -64,12 +70,6 @@ static NSMutableDictionary *gImageCache;
 
 +(UIImage *)imageForSize:(CGSize)size index:(NSUInteger)index {
     
-    //Need this for drawing the background image below. Could draw with a CGPath below, but won't look as nice.
-    static const CGFloat cornderRadius = 3;
-    static const CGFloat shadowSize = 1;
-    UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"Card"] resizableImageWithCapInsets:UIEdgeInsetsMake(cornderRadius + shadowSize, cornderRadius + shadowSize, cornderRadius + shadowSize, cornderRadius + shadowSize)]];
-    backgroundImage.frame = CGRectMake(0, 0, size.width, size.height);
-    
     NSValue *key = [NSValue valueWithCGSize:size];
     NSMutableArray *images = gImageCache[key];
     
@@ -84,11 +84,6 @@ static NSMutableDictionary *gImageCache;
             CGContextTranslateCTM(context, 0, size.height);
             CGContextScaleCTM(context, 1.0, -1.0);
             
-            //draw background.
-            [backgroundImage.layer renderInContext:context];
-            
-            //this will sort the scaling if you want to draw big cards
-            //because CGPDFPageGetDrawingTransform(page, kCGPDFBleedBox, CGRectMake(0, 0, size.width, size.height), 0, true) won't scale up, only down.
             CGPDFPageRef page = CGPDFDocumentGetPage(document, i + 1);
             CGRect pdfBox = CGPDFPageGetBoxRect(page, kCGPDFBleedBox);
             CGRect targetRect = CGRectMake(0, 0, size.width, size.height);
