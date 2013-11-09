@@ -78,12 +78,29 @@ static NSMutableDictionary *gImageCache;
         for (size_t i = 0; i < CGPDFDocumentGetNumberOfPages(document); i++) {
             UIGraphicsBeginImageContextWithOptions(size, false, 0);
             CGContextRef context = UIGraphicsGetCurrentContext();
+            
             CGContextTranslateCTM(context, 0.0, size.height);
             CGContextScaleCTM(context, 1.0, -1.0);
+            
             CGPDFPageRef page = CGPDFDocumentGetPage(document, i + 1);
-            CGContextConcatCTM(context, CGPDFPageGetDrawingTransform(page, kCGPDFBleedBox, CGRectMake(0, 0, size.width, size.height), 0, true));
+            CGRect pdfBox = CGPDFPageGetBoxRect(page, kCGPDFBleedBox);
+            CGRect targetRect = CGRectMake(0, 0, size.width, size.height);
+            CGFloat xScale = targetRect.size.width / pdfBox.size.width;
+            CGFloat yScale = targetRect.size.height / pdfBox.size.height;
+            CGFloat theScale = xScale < yScale ? xScale : yScale;
+            
+            CGPathRef path = CGPathCreateWithRect(CGRectMake(0, 0, size.width, size.height), NULL);
+            
+            CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+            CGContextAddPath(context, path);
+            CGPathRelease(path);
+            CGContextFillPath(context);
+            
+            CGContextConcatCTM(context, CGAffineTransformMakeScale(theScale, theScale));
             CGContextDrawPDFPage(context, page);
+            
             [images addObject:UIGraphicsGetImageFromCurrentImageContext()];
+            
         }
         CGPDFDocumentRelease(document);
         [gImageCache setObject:images forKey:key];
