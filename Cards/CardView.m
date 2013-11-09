@@ -26,7 +26,7 @@ static NSMutableDictionary *gImageCache;
         backgroundImage.frame = CGRectInset(self.bounds, -shadowSize, -shadowSize);
         backgroundImage.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:backgroundImage];
-        
+
         _cardImage = [[UIImageView alloc] initWithFrame:self.bounds];
         _cardImage.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:_cardImage];
@@ -69,10 +69,8 @@ static NSMutableDictionary *gImageCache;
 }
 
 +(UIImage *)imageForSize:(CGSize)size index:(NSUInteger)index {
-    
     NSValue *key = [NSValue valueWithCGSize:size];
     NSMutableArray *images = gImageCache[key];
-    
     if (!images) {
         NSURL *url = [NSURL fileURLWithPath:[NSBundle.mainBundle pathForResource:@"Cards" ofType:@"pdf"]];
         CGPDFDocumentRef document = CGPDFDocumentCreateWithURL((CFURLRef)url);
@@ -81,7 +79,7 @@ static NSMutableDictionary *gImageCache;
             UIGraphicsBeginImageContextWithOptions(size, false, 0);
             CGContextRef context = UIGraphicsGetCurrentContext();
             
-            CGContextTranslateCTM(context, 0, size.height);
+            CGContextTranslateCTM(context, 0.0, size.height);
             CGContextScaleCTM(context, 1.0, -1.0);
             
             CGPDFPageRef page = CGPDFDocumentGetPage(document, i + 1);
